@@ -1,0 +1,33 @@
+from fastapi import FastAPI
+from pydantic import BaseModel
+import pickle
+import numpy as np
+
+# Khởi tạo API
+app = FastAPI(title="API Dự Đoán Sinh Viên")
+
+# Load mô hình của Trường (Đảm bảo file model.pkl nằm cùng thư mục)
+with open("model.pkl", "rb") as f:
+    model = pickle.load(f)
+
+# Định nghĩa cấu trúc dữ liệu đầu vào (Tùy chỉnh theo file Excel của Giang)
+class StudentData(BaseModel):
+    diem_giua_ky: float
+    so_buoi_vang: int
+    diem_tb_tich_luy: float
+
+@app.get("/")
+def read_root():
+    return {"message": "Hệ thống API Dự đoán đang hoạt động!"}
+
+@app.post("/predict")
+def predict_student(data: StudentData):
+    # Biến đổi dữ liệu đầu vào thành mảng numpy
+    input_data = np.array([[data.diem_giua_ky, data.so_buoi_vang, data.diem_tb_tich_luy]])
+    
+    # Dự đoán
+    prediction = model.predict(input_data)
+    
+    # Trả về kết quả (0 là Rớt, 1 là Đậu - tùy mô hình của Trường)
+    result = "Đậu" if prediction[0] == 1 else "Rớt"
+    return {"ket_qua": result}
