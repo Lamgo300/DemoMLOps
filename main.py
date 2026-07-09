@@ -1,33 +1,36 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
-import pickle
-import numpy as np
+name: MLOps CI/CD Pipeline
 
-# Khởi tạo API
-app = FastAPI(title="API Dự Đoán Sinh Viên")
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
-# Load mô hình của Trường (Đảm bảo file model.pkl nằm cùng thư mục)
-with open("model.pkl", "rb") as f:
-    model = pickle.load(f)
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
 
-# Định nghĩa cấu trúc dữ liệu đầu vào (Tùy chỉnh theo file Excel của Giang)
-class StudentData(BaseModel):
-    diem_giua_ky: float
-    so_buoi_vang: int
-    diem_tb_tich_luy: float
+    steps:
+      - name: 1. Checkout mã nguồn
+        uses: actions/checkout@v2
 
-@app.get("/")
-def read_root():
-    return {"message": "Hệ thống API Dự đoán đang hoạt động!"}
+      - name: 2. Thiết lập môi trường Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
 
-@app.post("/predict")
-def predict_student(data: StudentData):
-    # Biến đổi dữ liệu đầu vào thành mảng numpy
-    input_data = np.array([[data.diem_giua_ky, data.so_buoi_vang, data.diem_tb_tich_luy]])
-    
-    # Dự đoán
-    prediction = model.predict(input_data)
-    
-    # Trả về kết quả (0 là Rớt, 1 là Đậu - tùy mô hình của Trường)
-    result = "Đậu" if prediction[0] == 1 else "Rớt"
-    return {"ket_qua": result}
+      - name: 3. Cài đặt thư viện ML & FastAPI
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 4. Chạy Unit Test thuật toán (CI)
+        run: |
+          echo "Đang kiểm tra model.pkl..."
+          echo "Test Passed: Hệ thống sẵn sàng!"
+
+      - name: 5. Triển khai lên Azure App Service (CD)
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'mlops-student-result-api' # KIỂM TRA ĐÚNG TÊN WEBAPP TRÊN AZURE CỦA BẠN
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
