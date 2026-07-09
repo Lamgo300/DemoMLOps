@@ -34,3 +34,4 @@ jobs:
         with:
           app-name: 'mlops-student-result-api-ekgqeqhxdzgfcqa9' # KIỂM TRA ĐÚNG TÊN WEBAPP TRÊN AZURE CỦA BẠN
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
+ 
