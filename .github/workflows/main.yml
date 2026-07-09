@@ -33,6 +33,6 @@ jobs:
       - name: 5. Triển khai lên Azure App Service (CD)
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'otonow-predict-api-123' # THAY TÊN WEB APP CỦA BẠN VÀO ĐÂY
+          app-name: 'mlops-student-result-api' # THAY TÊN WEB APP CỦA BẠN VÀO ĐÂY
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
           startup-command: 'uvicorn main:app --host 0.0.0.0 --port 8000'
