@@ -8,12 +8,13 @@ import numpy as np
 # Khởi tạo API
 app = FastAPI(title="API Dự Đoán Sinh Viên")
 
+# THÊM ĐOẠN NÀY ĐỂ CẤP QUYỀN CORS TỪ BÊN TRONG CODE PYTHON
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"], # Hoặc thay dấu * bằng "https://lamgo300.github.io" cho chắc chắn 100%
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"], # <--- SỬA CHỖ NÀY: Khai báo rõ ràng các phương thức
+    allow_headers=["Content-Type", "Authorization", "Accept"], # <--- SỬA CHỖ NÀY: Khai báo rõ các header
 )
 
 # Load mô hình (Đảm bảo file model.pkl nằm cùng thư mục)
