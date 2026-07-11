@@ -33,5 +33,5 @@ jobs:
       - name: 5. Triển khai lên Azure App Service (CD)
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'mlops-student-result-api...'
+          app-name: 'mlops-student-result-api'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
