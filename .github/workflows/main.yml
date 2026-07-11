@@ -35,3 +35,4 @@ jobs:
         with:
           app-name: 'mlops-student-result-api'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
+          startup-command: 'gunicorn -w 2 -k uvicorn.workers.UvicornWorker main:app'
